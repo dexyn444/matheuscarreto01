@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mateus carreto - Pix</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #101d2b;
+  color: white;
+  min-height: 100vh;
+}
+
+header {
+  background: linear-gradient(135deg, #102b46, #1766a0);
+  padding: 35px 20px;
+  text-align: center;
+  border-bottom: 4px solid #ffae00;
+}
+
+header .truck {
+  font-size: 65px;
+}
+
+header h1 {
+  font-size: 28px;
+  margin: 10px 0;
+  font-weight: 900;
+}
+
+header p {
+  color: #dcecff;
+}
+
+.container {
+  max-width: 440px;
+  margin: 25px auto;
+  padding: 20px;
+}
+
+.card {
+  background: #ffffff;
+  color: #172b40;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px #0005;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin: 14px 0 7px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ccd4dd;
+  border-radius: 9px;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 13px;
+  border: none;
+  border-radius: 9px;
+  background: #1268a8;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: .9;
+}
+
+button.orange {
+  background: #f0a000;
+  color: #172b40;
+}
+
+.pix-info {
+  background: #eaf3fb;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pix-info strong {
+  display: block;
+  font-size: 19px;
+  margin-top: 7px;
+}
+
+#resultado {
+  display: none;
+  margin-top: 25px;
+  text-align: center;
+  background: #f3f7fb;
+  padding: 20px;
+  border-radius: 12px;
+  color: #172b40;
+}
+
+#qrcode {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+  background: white;
+}
+
+#qrcode img, #qrcode canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.valor-final {
+  font-size: 28px;
+  color: #138044;
+  font-weight: bold;
+  margin: 10px;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #aabed0;
+  font-size: 13px;
+}
+
+.aviso {
+  font-size: 12px;
+  color: #596a7a;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="truck">🚚</div>
+  <h1>MATEUS CARRETO</h1>
+  <p>Seu frete com segurança e confiança!</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>💰 Receber pagamento Pix</h2>
+
+    <label>Nome do cliente</label>
+    <input id="cliente" placeholder="Digite o nome do cliente">
+
+    <label>Valor do frete (R$)</label>
+    <input id="valor" type="number"
+      placeholder="Ex: 150.00" min="0.01" step="0.01">
+
+    <label>Cidade do recebedor</label>
+    <input id="cidade" placeholder="Ex: SAO PAULO"
+      maxlength="25">
+
+    <button onclick="gerarPix()">
+      GERAR QR CODE PIX
+    </button>
+
+    <div class="pix-info">
+      <span>CHAVE PIX - CELULAR</span>
+      <strong>16 99143-0888</strong>
+      <small>Mateus Carreto</small>
+      <button class="orange" onclick="copiarPix()">
+        COPIAR CHAVE PIX
+      </button>
+    </div>
+
+    <div id="resultado">
+      <h2>📲 Pague pelo Pix</h2>
+      <p>Cliente: <strong id="nomeCliente"></strong></p>
+      <div class="valor-final" id="valorFinal"></div>
+
+      <div id="qrcode"></div>
+
+      <p>Abra o aplicativo do seu banco e escaneie o QR Code.</p>
+
+      <button onclick="baixarQR()">
+        BAIXAR QR CODE
+      </button>
+
+      <button class="orange" onclick="copiarCodigo()">
+        COPIAR PIX COPIA E COLA
+      </button>
+    </div>
+
+    <p class="aviso">
+      O QR Code é gerado com o valor informado.
+      A confirmação do pagamento deve ser feita
+      diretamente no aplicativo do banco.
+    </p>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 Mateus Carreto<br>
+  Transporte e Fretes
+</footer>
+
+<script>
+
+const CHAVE_PIX = "+5516991430888";
+const NOME = "MATEUS CARRETO";
+
+let codigoPix = "";
+
+function campo(id) {
+  return document.getElementById(id);
+}
+
+function formatarValor(valor) {
+  return valor.toFixed(2);
+}
+
+function campoEMV(id, valor) {
+  return id + String(valor.length).padStart(2, "0") + valor;
+}
+
+function crc16(str) {
+  let crc = 0xFFFF;
+
+  for (let i = 0; i < str.length; i++) {
+    crc ^= str.charCodeAt(i) << 8;
+
+    for (let j = 0; j < 8; j++) {
+      if (crc & 0x8000) {
+        crc = (crc << 1) ^ 0x1021;
+      } else {
+        crc <<= 1;
+      }
+
+      crc &= 0xFFFF;
+    }
+  }
+
+  return crc.toString(16).toUpperCase().padStart(4, "0");
+}
+
+function gerarPix() {
+  const cliente = campo("cliente").value.trim();
+  const valor = Number(campo("valor").value);
+  const cidade = campo("cidade").value
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase();
+
+  if (!valor || valor <= 0 || !Number.isFinite(valor)) {
+    alert("Digite um valor válido para o frete.");
+    return;
+  }
+
+  if (!cidade) {
+    alert("Informe a cidade do recebedor.");
+    return;
+  }
+
+  if (cidade.length > 25) {
+    alert("A cidade deve ter até 25 caracteres.");
+    return;
+  }
+
+  const chave = campoEMV("00", "BR.GOV.BCB.PIX") +
+                campoEMV("01", CHAVE_PIX);
+
+  const merchantAccount = campoEMV("26", chave);
+
+  const adicionais = campoEMV("05", "***");
+  const additionalData = campoEMV("62", adicionais);
+
+  let payload =
+    campoEMV("00", "01") +
+    campoEMV("01", "12") +
+    merchantAccount +
+    campoEMV("52", "0000") +
+    campoEMV("53", "986") +
+    campoEMV("54", formatarValor(valor)) +
+    campoEMV("58", "BR") +
+    campoEMV("59", NOME) +
+    campoEMV("60", cidade) +
+    additionalData +
+    "6304";
+
+  codigoPix = payload + crc16(payload);
+
+  campo("nomeCliente").textContent = cliente || "Não informado";
+
+  campo("valorFinal").textContent =
+    valor.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL"
+    });
+
+  campo("resultado").style.display = "block";
+
+  campo("qrcode").innerHTML = "";
+
+  new QRCode(campo("qrcode"), {
+    text: codigoPix,
+    width: 230,
+    height: 230,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  campo("resultado").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+function copiarPix() {
+  navigator.clipboard.writeText(CHAVE_PIX)
+    .then(() => alert("Chave Pix copiada!"))
+    .catch(() => alert("Não foi possível copiar."));
+}
+
+function copiarCodigo() {
+  if (!codigoPix) return;
+
+  navigator.clipboard.writeText(codigoPix)
+    .then(() => alert("Código Pix copiado!"))
+    .catch(() => alert("Não foi possível copiar."));
+}
+
+function baixarQR() {
+  const canvas = campo("qrcode").querySelector("canvas");
+  const img = campo("qrcode").querySelector("img");
+
+  const url = canvas ? canvas.toDataURL("image/png") :
+              img ? img.src : null;
+
+  if (!url) {
+    alert("Gere o QR Code primeiro.");
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "pix-mateus-carreto.png";
+  link.click();
+}
+
+</script>
+
+</body>
+</html>
