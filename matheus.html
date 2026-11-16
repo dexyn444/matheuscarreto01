@@ -2,159 +2,201 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>mateus carreto - Pix</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b46">
+  <meta name="description" content="Gere QR Codes Pix para pagamentos de frete do Mateus Carreto.">
+  <title>Mateus Carreto | Pagamento via Pix</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --navy: #102b46;
+      --blue: #1766a0;
+      --gold: #f0a000;
+      --ink: #172b40;
+      --muted: #637487;
+    }
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    * { box-sizing: border-box; }
 
-body {
-  font-family: Arial, sans-serif;
-  background: #101d2b;
-  color: white;
-  min-height: 100vh;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+      color: white;
+      background: radial-gradient(ellipse at top, #1b3d5c, #101d2b 58%);
+    }
 
-header {
-  background: linear-gradient(135deg, #102b46, #1766a0);
-  padding: 35px 20px;
-  text-align: center;
-  border-bottom: 4px solid #ffae00;
-}
+    header {
+      padding: 32px 18px 27px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      border-bottom: 4px solid var(--gold);
+    }
 
-header .truck {
-  font-size: 65px;
-}
+    .truck {
+      font-size: 56px;
+    }
 
-header h1 {
-  font-size: 28px;
-  margin: 10px 0;
-  font-weight: 900;
-}
+    header h1 {
+      margin: 10px 0 7px;
+      font-size: clamp(24px, 5vw, 32px);
+    }
 
-header p {
-  color: #dcecff;
-}
+    header p {
+      margin: 0;
+      color: #dcecff;
+    }
 
-.container {
-  max-width: 440px;
-  margin: 25px auto;
-  padding: 20px;
-}
+    main {
+      width: min(100% - 28px, 460px);
+      margin: 28px auto;
+      flex: 1;
+    }
 
-.card {
-  background: #ffffff;
-  color: #172b40;
-  padding: 25px;
-  border-radius: 18px;
-  box-shadow: 0 10px 30px #0005;
-}
+    .card {
+      padding: clamp(20px, 5vw, 28px);
+      border-radius: 18px;
+      color: var(--ink);
+      background: white;
+      box-shadow: 0 14px 38px #0005;
+    }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
+    h2 {
+      margin: 0 0 20px;
+      text-align: center;
+      font-size: 22px;
+    }
 
-label {
-  display: block;
-  margin: 14px 0 7px;
-  font-weight: bold;
-}
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      font-weight: bold;
+      font-size: 14px;
+    }
 
-input {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ccd4dd;
-  border-radius: 9px;
-  font-size: 16px;
-}
+    input {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 13px;
+      border: 1px solid #cbd5df;
+      border-radius: 9px;
+      background: white;
+      color: var(--ink);
+      font-size: 16px;
+    }
 
-button {
-  width: 100%;
-  padding: 15px;
-  margin-top: 13px;
-  border: none;
-  border-radius: 9px;
-  background: #1268a8;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    input:focus-visible, button:focus-visible {
+      outline: 3px solid #79baf0;
+      outline-offset: 2px;
+    }
 
-button:hover {
-  opacity: .9;
-}
+    button {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 13px;
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 9px;
+      background: #1268a8;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-button.orange {
-  background: #f0a000;
-  color: #172b40;
-}
+    button:hover {
+      filter: brightness(1.08);
+    }
 
-.pix-info {
-  background: #eaf3fb;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 20px;
-  text-align: center;
-}
+    button.orange {
+      background: var(--gold);
+      color: var(--ink);
+    }
 
-.pix-info strong {
-  display: block;
-  font-size: 19px;
-  margin-top: 7px;
-}
+    .pix-info {
+      margin-top: 22px;
+      padding: 16px;
+      border-radius: 11px;
+      background: #eaf3fb;
+      text-align: center;
+    }
 
-#resultado {
-  display: none;
-  margin-top: 25px;
-  text-align: center;
-  background: #f3f7fb;
-  padding: 20px;
-  border-radius: 12px;
-  color: #172b40;
-}
+    .pix-info strong {
+      display: block;
+      margin: 7px 0 3px;
+      font-size: 20px;
+    }
 
-#qrcode {
-  display: flex;
-  justify-content: center;
-  margin: 20px auto;
-  background: white;
-}
+    .pix-info small {
+      color: #526579;
+    }
 
-#qrcode img, #qrcode canvas {
-  max-width: 100%;
-  height: auto;
-}
+    #resultado {
+      display: none;
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #f3f7fb;
+      text-align: center;
+    }
 
-.valor-final {
-  font-size: 28px;
-  color: #138044;
-  font-weight: bold;
-  margin: 10px;
-}
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 18px auto;
+      padding: 10px;
+      width: fit-content;
+      max-width: 100%;
+      background: white;
+      border-radius: 8px;
+    }
 
-footer {
-  text-align: center;
-  padding: 25px;
-  color: #aabed0;
-  font-size: 13px;
-}
+    #qrcode img, #qrcode canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
 
-.aviso {
-  font-size: 12px;
-  color: #596a7a;
-  margin-top: 15px;
-  line-height: 1.5;
-}
-</style>
+    .valor-final {
+      margin: 10px 0;
+      color: #138044;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .aviso {
+      margin: 17px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .status {
+      min-height: 18px;
+      margin: 10px 0 0;
+      color: #245b36;
+      font-size: 13px;
+    }
+
+    footer {
+      padding: 22px 15px;
+      color: #aabed0;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 380px) {
+      header { padding-top: 25px; }
+      .truck { font-size: 48px; }
+      .card { padding: 18px; }
+      .valor-final { font-size: 25px; }
+    }
+  </style>
 </head>
 
 <body>
@@ -165,98 +207,109 @@ footer {
   <p>Seu frete com segurança e confiança!</p>
 </header>
 
-<div class="container">
+<main>
+  <section class="card">
 
-  <div class="card">
     <h2>💰 Receber pagamento Pix</h2>
 
-    <label>Nome do cliente</label>
-    <input id="cliente" placeholder="Digite o nome do cliente">
+    <label for="cliente">Nome do cliente (opcional)</label>
+    <input id="cliente" type="text"
+      maxlength="60"
+      placeholder="Digite o nome do cliente">
 
-    <label>Valor do frete (R$)</label>
+    <label for="valor">Valor do frete (R$)</label>
     <input id="valor" type="number"
-      placeholder="Ex: 150.00" min="0.01" step="0.01">
+      inputmode="decimal"
+      min="0.01"
+      step="0.01"
+      placeholder="Ex.: 150,00">
 
-    <label>Cidade do recebedor</label>
-    <input id="cidade" placeholder="Ex: SAO PAULO"
-      maxlength="25">
+    <label for="cidade">Cidade do recebedor</label>
+    <input id="cidade" type="text"
+      maxlength="15"
+      placeholder="Ex.: RIBEIRAO PRETO">
 
-    <button onclick="gerarPix()">
+    <button id="gerar" type="button">
       GERAR QR CODE PIX
     </button>
 
     <div class="pix-info">
-      <span>CHAVE PIX - CELULAR</span>
+      <span>CHAVE PIX — CELULAR</span>
       <strong>16 99143-0888</strong>
       <small>Mateus Carreto</small>
-      <button class="orange" onclick="copiarPix()">
+
+      <button class="orange" id="copiarChave" type="button">
         COPIAR CHAVE PIX
       </button>
+
+      <p class="status" id="statusChave" role="status"></p>
     </div>
 
-    <div id="resultado">
+    <section id="resultado" aria-live="polite">
+
       <h2>📲 Pague pelo Pix</h2>
+
       <p>Cliente: <strong id="nomeCliente"></strong></p>
+
       <div class="valor-final" id="valorFinal"></div>
 
       <div id="qrcode"></div>
 
       <p>Abra o aplicativo do seu banco e escaneie o QR Code.</p>
 
-      <button onclick="baixarQR()">
+      <button id="baixar" type="button">
         BAIXAR QR CODE
       </button>
 
-      <button class="orange" onclick="copiarCodigo()">
+      <button class="orange" id="copiarCodigo" type="button">
         COPIAR PIX COPIA E COLA
       </button>
-    </div>
+
+      <p class="status" id="statusCodigo" role="status"></p>
+
+    </section>
 
     <p class="aviso">
       O QR Code é gerado com o valor informado.
-      A confirmação do pagamento deve ser feita
-      diretamente no aplicativo do banco.
+      Antes de concluir, confira o nome do recebedor
+      e o valor no aplicativo do seu banco.
+      A confirmação deve ser feita diretamente
+      na sua conta bancária.
     </p>
-  </div>
 
-</div>
+  </section>
+</main>
 
 <footer>
-  © 2026 Mateus Carreto<br>
-  Transporte e Fretes
+  © 2026 Mateus Carreto · Transporte e Fretes
 </footer>
 
 <script>
+"use strict";
 
+// Confira a chave Pix antes de publicar.
 const CHAVE_PIX = "+5516991430888";
-const NOME = "MATEUS CARRETO";
+const NOME_RECEBEDOR = "MATEUS CARRETO";
 
 let codigoPix = "";
 
-function campo(id) {
-  return document.getElementById(id);
-}
-
-function formatarValor(valor) {
-  return valor.toFixed(2);
-}
+const el = (id) => document.getElementById(id);
 
 function campoEMV(id, valor) {
-  return id + String(valor.length).padStart(2, "0") + valor;
+  const texto = String(valor);
+  return id + String(texto.length).padStart(2, "0") + texto;
 }
 
-function crc16(str) {
+function crc16(payload) {
   let crc = 0xFFFF;
 
-  for (let i = 0; i < str.length; i++) {
-    crc ^= str.charCodeAt(i) << 8;
+  for (let i = 0; i < payload.length; i++) {
+    crc ^= payload.charCodeAt(i) << 8;
 
-    for (let j = 0; j < 8; j++) {
-      if (crc & 0x8000) {
-        crc = (crc << 1) ^ 0x1021;
-      } else {
-        crc <<= 1;
-      }
+    for (let bit = 0; bit < 8; bit++) {
+      crc = (crc & 0x8000)
+        ? ((crc << 1) ^ 0x1021)
+        : (crc << 1);
 
       crc &= 0xFFFF;
     }
@@ -265,66 +318,79 @@ function crc16(str) {
   return crc.toString(16).toUpperCase().padStart(4, "0");
 }
 
-function gerarPix() {
-  const cliente = campo("cliente").value.trim();
-  const valor = Number(campo("valor").value);
-  const cidade = campo("cidade").value
-    .trim()
+function normalizarCidade(valor) {
+  return valor.trim()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Z0-9 ]/gi, "")
     .toUpperCase();
+}
 
-  if (!valor || valor <= 0 || !Number.isFinite(valor)) {
-    alert("Digite um valor válido para o frete.");
+function gerarPix() {
+  const valor = Number(el("valor").value);
+  const cidade = normalizarCidade(el("cidade").value);
+
+  if (!Number.isFinite(valor) || valor <= 0 ||
+      Math.round(valor * 100) !== valor * 100) {
+    alert("Digite um valor válido, com no máximo duas casas decimais.");
+    el("valor").focus();
     return;
   }
 
   if (!cidade) {
     alert("Informe a cidade do recebedor.");
+    el("cidade").focus();
     return;
   }
 
-  if (cidade.length > 25) {
-    alert("A cidade deve ter até 25 caracteres.");
+  if (cidade.length > 15) {
+    alert("A cidade deve ter até 15 caracteres.");
+    el("cidade").focus();
     return;
   }
 
-  const chave = campoEMV("00", "BR.GOV.BCB.PIX") +
-                campoEMV("01", CHAVE_PIX);
+  if (typeof QRCode === "undefined") {
+    alert("Não foi possível carregar a biblioteca do QR Code. Verifique sua conexão.");
+    return;
+  }
 
-  const merchantAccount = campoEMV("26", chave);
+  const chave =
+    campoEMV("00", "BR.GOV.BCB.PIX") +
+    campoEMV("01", CHAVE_PIX);
 
-  const adicionais = campoEMV("05", "***");
-  const additionalData = campoEMV("62", adicionais);
+  const contaRecebedor = campoEMV("26", chave);
+
+  const dadosAdicionais =
+    campoEMV("62", campoEMV("05", "***"));
 
   let payload =
     campoEMV("00", "01") +
     campoEMV("01", "12") +
-    merchantAccount +
+    contaRecebedor +
     campoEMV("52", "0000") +
     campoEMV("53", "986") +
-    campoEMV("54", formatarValor(valor)) +
+    campoEMV("54", valor.toFixed(2)) +
     campoEMV("58", "BR") +
-    campoEMV("59", NOME) +
+    campoEMV("59", NOME_RECEBEDOR) +
     campoEMV("60", cidade) +
-    additionalData +
+    dadosAdicionais +
     "6304";
 
   codigoPix = payload + crc16(payload);
 
-  campo("nomeCliente").textContent = cliente || "Não informado";
+  el("nomeCliente").textContent =
+    el("cliente").value.trim() || "Não informado";
 
-  campo("valorFinal").textContent =
+  el("valorFinal").textContent =
     valor.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL"
     });
 
-  campo("resultado").style.display = "block";
+  el("resultado").style.display = "block";
+  el("qrcode").replaceChildren();
 
-  campo("qrcode").innerHTML = "";
-
-  new QRCode(campo("qrcode"), {
+  new QRCode(el("qrcode"), {
     text: codigoPix,
     width: 230,
     height: 230,
@@ -333,31 +399,48 @@ function gerarPix() {
     correctLevel: QRCode.CorrectLevel.M
   });
 
-  campo("resultado").scrollIntoView({
-    behavior: "smooth"
+  el("statusCodigo").textContent = "";
+
+  el("resultado").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
   });
 }
 
-function copiarPix() {
-  navigator.clipboard.writeText(CHAVE_PIX)
-    .then(() => alert("Chave Pix copiada!"))
-    .catch(() => alert("Não foi possível copiar."));
-}
+async function copiarTexto(texto, statusId, mensagem) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(texto);
+    } else {
+      const area = document.createElement("textarea");
+      area.value = texto;
+      area.style.position = "fixed";
+      area.style.opacity = "0";
 
-function copiarCodigo() {
-  if (!codigoPix) return;
+      document.body.appendChild(area);
+      area.select();
 
-  navigator.clipboard.writeText(codigoPix)
-    .then(() => alert("Código Pix copiado!"))
-    .catch(() => alert("Não foi possível copiar."));
+      const copiou = document.execCommand("copy");
+      area.remove();
+
+      if (!copiou) throw new Error("Falha ao copiar");
+    }
+
+    el(statusId).textContent = mensagem;
+
+  } catch {
+    el(statusId).textContent =
+      "Não foi possível copiar automaticamente. Selecione e copie manualmente.";
+  }
 }
 
 function baixarQR() {
-  const canvas = campo("qrcode").querySelector("canvas");
-  const img = campo("qrcode").querySelector("img");
+  const canvas = el("qrcode").querySelector("canvas");
+  const img = el("qrcode").querySelector("img");
 
-  const url = canvas ? canvas.toDataURL("image/png") :
-              img ? img.src : null;
+  const url = canvas
+    ? canvas.toDataURL("image/png")
+    : (img ? img.src : null);
 
   if (!url) {
     alert("Gere o QR Code primeiro.");
@@ -367,8 +450,38 @@ function baixarQR() {
   const link = document.createElement("a");
   link.href = url;
   link.download = "pix-mateus-carreto.png";
+
+  document.body.appendChild(link);
   link.click();
+  link.remove();
 }
+
+el("gerar").addEventListener("click", gerarPix);
+
+el("copiarChave").addEventListener("click", () =>
+  copiarTexto(CHAVE_PIX, "statusChave", "Chave Pix copiada!")
+);
+
+el("copiarCodigo").addEventListener("click", () => {
+  if (codigoPix) {
+    copiarTexto(
+      codigoPix,
+      "statusCodigo",
+      "Código Pix copia e cola copiado!"
+    );
+  }
+});
+
+el("baixar").addEventListener("click", baixarQR);
+
+el("valor").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") gerarPix();
+});
+
+el("cidade").addEventListener("input", () => {
+  const input = el("cidade");
+  input.value = normalizarCidade(input.value).slice(0, 15);
+});
 
 </script>
 
